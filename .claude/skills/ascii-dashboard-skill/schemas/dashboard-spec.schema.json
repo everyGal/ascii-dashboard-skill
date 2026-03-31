@@ -1,0 +1,580 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "dashboard-spec.schema.json",
+  "title": "DashboardSpec",
+  "description": "Structured specification for an ASCII-wireframed dashboard layout.",
+  "type": "object",
+  "required": ["dashboard"],
+  "additionalProperties": false,
+  "properties": {
+    "dashboard": {
+      "type": "object",
+      "required": ["title", "layout", "widgets"],
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Display title shown in the dashboard header."
+        },
+        "layout": {
+          "type": "object",
+          "required": ["columns"],
+          "additionalProperties": false,
+          "properties": {
+            "columns": {
+              "type": "integer",
+              "const": 12,
+              "description": "Total grid columns. Always 12."
+            },
+            "rows": {
+              "oneOf": [
+                { "type": "string", "const": "auto" },
+                { "type": "integer", "minimum": 1 }
+              ],
+              "description": "Total grid rows. Use 'auto' to let the grid expand to fit widgets.",
+              "default": "auto"
+            }
+          }
+        },
+        "filters": {
+          "type": "array",
+          "description": "Global filter controls rendered in the dashboard header.",
+          "items": {
+            "type": "object",
+            "required": ["field", "type"],
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "type": "string",
+                "description": "Data field this filter applies to."
+              },
+              "type": {
+                "type": "string",
+                "enum": ["dropdown", "multi_select", "date_range", "search", "toggle"],
+                "description": "UI control type."
+              },
+              "default": {
+                "type": "string",
+                "description": "Default selected value shown in the filter."
+              }
+            }
+          },
+          "default": []
+        },
+        "widgets": {
+          "type": "array",
+          "description": "All widgets placed on the dashboard grid.",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/widget" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "grid": {
+      "type": "object",
+      "description": "Position and size on the 12-column grid.",
+      "required": ["col", "row", "width", "height"],
+      "additionalProperties": false,
+      "properties": {
+        "col": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12,
+          "description": "Starting column (1-indexed)."
+        },
+        "row": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Starting row (1-indexed)."
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12,
+          "description": "Width in columns. col + width - 1 must not exceed 12."
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Height in row units."
+        }
+      }
+    },
+    "widget": {
+      "type": "object",
+      "required": ["id", "type", "title", "grid"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Unique snake_case identifier for this widget."
+        },
+        "title": {
+          "type": "string",
+          "description": "Display title rendered in the widget header."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "kpi",
+            "bar",
+            "line",
+            "multi_series",
+            "time_series",
+            "area",
+            "pie",
+            "table",
+            "scatter",
+            "combo",
+            "heatmap",
+            "treemap",
+            "funnel",
+            "waterfall",
+            "bullet_chart",
+            "histogram",
+            "gauge",
+            "gantt",
+            "box_plot",
+            "sparkline",
+            "calendar_heatmap",
+            "lollipop",
+            "slope_chart",
+            "packed_bubble",
+            "map",
+            "sankey",
+            "radar",
+            "bump_chart",
+            "sunburst",
+            "stream_graph",
+            "network",
+            "filter_bar",
+            "text_header"
+          ],
+          "description": "Widget type. Determines which additional fields apply."
+        },
+        "grid": { "$ref": "#/definitions/grid" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "kpi" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "value_field": { "type": "string", "description": "Primary metric field name." },
+              "format": {
+                "type": "string",
+                "enum": ["number_comma", "percentage", "currency", "decimal"],
+                "default": "number_comma"
+              },
+              "previous_field": { "type": "string", "description": "Field for comparison value." },
+              "comparison": {
+                "type": "string",
+                "enum": ["previous_period", "target", "percent_change", "absolute_change"]
+              },
+              "subtitle": { "type": "string", "description": "Secondary label under the value." }
+            },
+            "required": ["value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "bar" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "category_field": { "type": "string", "description": "Dimension field for categories." },
+              "value_field": { "type": "string", "description": "Measure field for bar height/length." },
+              "series_field": { "type": "string", "description": "Field used to split series (stacked/grouped)." },
+              "horizontal": { "type": "boolean", "default": false },
+              "variant": {
+                "type": "string",
+                "enum": ["standard", "stacked", "grouped"],
+                "default": "standard"
+              }
+            },
+            "required": ["category_field", "value_field"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "enum": ["line", "time_series"] } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "x_field": { "type": "string", "description": "Dimension field for x-axis." },
+              "y_field": { "type": "string", "description": "Measure field for y-axis." },
+              "x_type": { "type": "string", "enum": ["string", "date", "ordinal"], "default": "string" }
+            },
+            "required": ["x_field", "y_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "multi_series" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "x_field": { "type": "string", "description": "Shared x-axis field." },
+              "x_type": { "type": "string", "enum": ["string", "date", "ordinal"], "default": "string" },
+              "series": {
+                "type": "array",
+                "items": { "type": "string" },
+                "minItems": 2,
+                "description": "List of series field names."
+              }
+            },
+            "required": ["x_field", "series"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "area" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "x_field": { "type": "string" },
+              "y_field": { "type": "string" },
+              "x_type": { "type": "string", "enum": ["string", "date", "ordinal"], "default": "string" },
+              "stacked": { "type": "boolean", "default": false },
+              "series": { "type": "array", "items": { "type": "string" } }
+            },
+            "required": ["x_field", "y_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "pie" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "category_field": { "type": "string" },
+              "value_field": { "type": "string" },
+              "donut": { "type": "boolean", "default": false }
+            },
+            "required": ["category_field", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "table" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "columns": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Ordered list of column field names to display."
+              },
+              "category_field": { "type": "string", "description": "Primary row identifier field." },
+              "value_field": { "type": "string" },
+              "highlight": { "type": "boolean", "default": false, "description": "Enable heatmap-style cell highlighting." },
+              "sort_field": { "type": "string" },
+              "sort_direction": { "type": "string", "enum": ["asc", "desc"], "default": "desc" }
+            },
+            "required": ["columns"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "scatter" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "x_field": { "type": "string" },
+              "y_field": { "type": "string" },
+              "size_field": { "type": "string", "description": "Field controlling bubble size (bubble variant)." },
+              "color_field": { "type": "string", "description": "Field used to color-encode points." },
+              "label_field": { "type": "string" }
+            },
+            "required": ["x_field", "y_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "combo" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "x_field": { "type": "string" },
+              "bar_field": { "type": "string", "description": "Measure rendered as bars." },
+              "line_field": { "type": "string", "description": "Measure rendered as a line (secondary axis)." }
+            },
+            "required": ["x_field", "bar_field", "line_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "heatmap" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "row_field": { "type": "string" },
+              "col_field": { "type": "string" },
+              "value_field": { "type": "string" }
+            },
+            "required": ["row_field", "col_field", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "treemap" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "category_field": { "type": "string" },
+              "value_field": { "type": "string" },
+              "label_field": { "type": "string" },
+              "parent_field": { "type": "string", "description": "Parent category for hierarchical treemaps." }
+            },
+            "required": ["category_field", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "funnel" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "stage_field": { "type": "string" },
+              "value_field": { "type": "string" }
+            },
+            "required": ["stage_field", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "waterfall" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "category_field": { "type": "string" },
+              "value_field": { "type": "string" },
+              "type_field": { "type": "string", "description": "Field indicating increase/decrease/subtotal." }
+            },
+            "required": ["category_field", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "bullet_chart" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "category_field": { "type": "string" },
+              "value_field": { "type": "string" },
+              "target_field": { "type": "string" },
+              "range_fields": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Fields for background qualitative ranges (e.g. poor/fair/good)."
+              }
+            },
+            "required": ["category_field", "value_field", "target_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "histogram" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "value_field": { "type": "string" },
+              "bin_count": { "type": "integer", "minimum": 2, "default": 10 }
+            },
+            "required": ["value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "gauge" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "value_field": { "type": "string" },
+              "min": { "type": "number", "default": 0 },
+              "max": { "type": "number" },
+              "target": { "type": "number" },
+              "format": { "type": "string", "enum": ["number_comma", "percentage", "currency", "decimal"] }
+            },
+            "required": ["value_field", "max"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "gantt" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "task_field": { "type": "string" },
+              "start_field": { "type": "string" },
+              "end_field": { "type": "string" },
+              "group_field": { "type": "string" }
+            },
+            "required": ["task_field", "start_field", "end_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "box_plot" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "category_field": { "type": "string" },
+              "value_field": { "type": "string" }
+            },
+            "required": ["category_field", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "sparkline" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "metrics": {
+                "type": "array",
+                "description": "List of metrics to render as sparkline rows.",
+                "items": {
+                  "type": "object",
+                  "required": ["label", "value_field", "trend_field"],
+                  "properties": {
+                    "label": { "type": "string" },
+                    "value_field": { "type": "string" },
+                    "trend_field": { "type": "string" },
+                    "format": { "type": "string", "enum": ["number_comma", "percentage", "currency", "decimal"] }
+                  }
+                }
+              }
+            },
+            "required": ["metrics"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "calendar_heatmap" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "date_field": { "type": "string" },
+              "value_field": { "type": "string" }
+            },
+            "required": ["date_field", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "lollipop" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "category_field": { "type": "string" },
+              "value_field": { "type": "string" },
+              "horizontal": { "type": "boolean", "default": false }
+            },
+            "required": ["category_field", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "slope_chart" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "category_field": { "type": "string" },
+              "start_field": { "type": "string" },
+              "end_field": { "type": "string" },
+              "start_label": { "type": "string" },
+              "end_label": { "type": "string" }
+            },
+            "required": ["category_field", "start_field", "end_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "packed_bubble" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "category_field": { "type": "string" },
+              "size_field": { "type": "string" },
+              "color_field": { "type": "string" }
+            },
+            "required": ["category_field", "size_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "map" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "geo_field": { "type": "string", "description": "Geographic dimension (country, state, city, lat/lng)." },
+              "value_field": { "type": "string" },
+              "map_type": { "type": "string", "enum": ["filled", "symbol", "point"], "default": "filled" }
+            },
+            "required": ["geo_field", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "sankey" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "source_field": { "type": "string" },
+              "target_field": { "type": "string" },
+              "value_field": { "type": "string" }
+            },
+            "required": ["source_field", "target_field", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "radar" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "axis_field": { "type": "string", "description": "Field for radar axes (dimensions)." },
+              "value_field": { "type": "string" },
+              "series_field": { "type": "string", "description": "Field to split multiple radar series." }
+            },
+            "required": ["axis_field", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "bump_chart" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "category_field": { "type": "string" },
+              "period_field": { "type": "string" },
+              "rank_field": { "type": "string" }
+            },
+            "required": ["category_field", "period_field", "rank_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "sunburst" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "hierarchy_fields": {
+                "type": "array",
+                "items": { "type": "string" },
+                "minItems": 2,
+                "description": "Ordered list of fields from outermost to innermost ring."
+              },
+              "value_field": { "type": "string" }
+            },
+            "required": ["hierarchy_fields", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "stream_graph" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "x_field": { "type": "string" },
+              "series_field": { "type": "string" },
+              "value_field": { "type": "string" }
+            },
+            "required": ["x_field", "series_field", "value_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "network" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "node_id_field": { "type": "string" },
+              "node_label_field": { "type": "string" },
+              "edge_source_field": { "type": "string" },
+              "edge_target_field": { "type": "string" },
+              "edge_weight_field": { "type": "string" }
+            },
+            "required": ["node_id_field", "edge_source_field", "edge_target_field"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "filter_bar" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "filters": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["field", "type"],
+                  "properties": {
+                    "field": { "type": "string" },
+                    "type": { "type": "string", "enum": ["dropdown", "multi_select", "date_range", "search", "toggle"] },
+                    "default": { "type": "string" }
+                  }
+                }
+              }
+            },
+            "required": ["filters"]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "text_header" } }, "required": ["type"] },
+          "then": {
+            "properties": {
+              "text": { "type": "string", "description": "Main heading text." },
+              "subtitle": { "type": "string" }
+            },
+            "required": ["text"]
+          }
+        }
+      ]
+    }
+  }
+}

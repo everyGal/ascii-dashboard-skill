@@ -1,0 +1,75 @@
+# Component: Calendar Heatmap
+
+## ASCII Patterns
+
+### Monthly Calendar Heatmap
+```
+╭──────────────────────────────────────────╮
+│ Daily Active Users — January 2026        │
+│                                          │
+│        Wk1  Wk2  Wk3  Wk4  Wk5         │
+│  Mon   ░░   ██   ▓▓   ██   ░░          │
+│  Tue   ░░   ██   ██   ▓▓   ░░          │
+│  Wed   ▓▓   ██   ██   ██   ▓▓          │
+│  Thu   ▓▓   ▓▓   ██   ██                │
+│  Fri   ░░   ▓▓   ▓▓   ██                │
+│  Sat   ░░   ░░   ░░   ░░                │
+│  Sun   ░░   ░░   ░░   ░░                │
+│                                          │
+│  ░░ Low  ▓▓ Medium  ██ High             │
+╰──────────────────────────────────────────╯
+```
+
+### GitHub-Style Year Heatmap
+```
+╭────────────────────────────────────────────────────╮
+│ Deployments — 2025                                  │
+│                                                     │
+│      Jan  Feb  Mar  Apr  May  Jun  Jul  Aug  Sep   │
+│  Mon ░▓██░▓▓░░▓██░▓██░▓░██░▓██░▓░░▓██░▓██░▓      │
+│  Wed ░░▓█░░▓░░░▓█░░▓█░░▓░█░░▓█░░▓░░▓█░░▓█░░      │
+│  Fri ░▓▓█░▓▓░░▓▓█░▓▓█░▓▓░█░▓▓█░▓▓░▓▓█░▓▓█░▓      │
+│                                                     │
+│  ░ 0  ░ 1-2  ▓ 3-5  █ 6+                          │
+╰────────────────────────────────────────────────────╯
+```
+
+### Calendar Heatmap with Values
+```
+╭──────────────────────────────────────────╮
+│ Support Tickets — March 2026             │
+│                                          │
+│        Wk1  Wk2  Wk3  Wk4  Wk5         │
+│  Mon        ░12  ▓28  ██42  ░15         │
+│  Tue        ░14  ▓31  ██38  ░11         │
+│  Wed        ▓22  ██45  ▓35  ░09         │
+│  Thu        ▓19  ██41  ▓29               │
+│  Fri        ░08  ▓24  ░18               │
+│  Sat        ░02  ░05  ░03               │
+│  Sun        ░01  ░03  ░02               │
+╰──────────────────────────────────────────╯
+```
+
+## Spec Template
+```json
+{
+  "id": "(required) string — unique snake_case identifier",
+  "type": "calendar_heatmap",
+  "title": "(required) string — display name",
+  "date_field": "(required) string — date dimension for calendar cells",
+  "value_field": "(required) string — measure controlling color intensity",
+  "color_scale": "(optional) string — sequential | diverging, default: sequential",
+  "time_range": "(optional) string — month | quarter | year, default: month",
+  "grid": {
+    "col": "(required) int 1-12",
+    "row": "(required) int",
+    "width": "(required) int — typically 6-8",
+    "height": "(required) int — typically 2-3"
+  }
+}
+```
+
+## Sizing Guidelines
+- **Width**: 6-8 columns (needs room for 4-5 week columns plus day labels)
+- **Height**: 2-3 rows (7 day-of-week rows plus title and legend)
+- **Common pattern**: Full-width (12) for year view, 6-8 for monthly view beside a summary panel

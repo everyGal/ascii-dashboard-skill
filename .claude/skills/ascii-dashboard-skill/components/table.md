@@ -1,0 +1,87 @@
+# Component: Table
+
+## ASCII Patterns
+
+### Text Table
+```
+╭──────────────────────────────────────────────────╮
+│ Sales by Region                                   │
+│                                                   │
+│ ┌────────────┬──────────┬──────────┬────────────┐ │
+│ │ Region     │ Revenue  │ Orders   │ Avg. Order │ │
+│ ├────────────┼──────────┼──────────┼────────────┤ │
+│ │ North      │ $142,500 │    1,250 │     $114   │ │
+│ │ South      │ $108,300 │      980 │     $111   │ │
+│ │ East       │  $97,800 │      870 │     $112   │ │
+│ │ West       │  $86,400 │      760 │     $114   │ │
+│ │ Central    │  $62,100 │      540 │     $115   │ │
+│ └────────────┴──────────┴──────────┴────────────┘ │
+╰──────────────────────────────────────────────────╯
+```
+
+### Compact Table (fewer columns)
+```
+╭──────────────────────────────────╮
+│ Top Customers                     │
+│                                   │
+│ ┌──────────────────┬─────────┐   │
+│ │ Customer         │ Revenue │   │
+│ ├──────────────────┼─────────┤   │
+│ │ Acme Corp        │ $45,200 │   │
+│ │ Global Inc       │ $38,700 │   │
+│ │ Tech Solutions   │ $32,100 │   │
+│ │ DataFlow LLC     │ $28,500 │   │
+│ │ Cloud Nine       │ $24,800 │   │
+│ └──────────────────┴─────────┘   │
+╰──────────────────────────────────╯
+```
+
+### Highlight Table
+```
+╭──────────────────────────────────────────────────╮
+│ Performance Matrix                                │
+│                                                   │
+│ ┌────────────┬────────┬────────┬────────┬───────┐ │
+│ │            │   Q1   │   Q2   │   Q3   │  Q4   │ │
+│ ├────────────┼────────┼────────┼────────┼───────┤ │
+│ │ Product A  │ ██ 92  │ ▓▓ 78  │ ██ 88  │ ██ 95 │ │
+│ │ Product B  │ ▓▓ 71  │ ░░ 45  │ ▓▓ 67  │ ▓▓ 73 │ │
+│ │ Product C  │ ░░ 38  │ ▓▓ 62  │ ▓▓ 75  │ ██ 84 │ │
+│ │ Product D  │ ██ 89  │ ██ 91  │ ▓▓ 76  │ ░░ 52 │ │
+│ └────────────┴────────┴────────┴────────┴───────┘ │
+│       ██ High (>80)  ▓▓ Mid (50-80)  ░░ Low (<50) │
+╰──────────────────────────────────────────────────╯
+```
+
+## Spec Template
+```json
+{
+  "id": "(required) string — unique snake_case identifier",
+  "type": "table",
+  "title": "(required) string — display name",
+  "category_field": "(required) string — primary dimension field",
+  "value_field": "(required) string — primary measure field",
+  "columns": [
+    {
+      "field": "(required) string — field name",
+      "label": "(optional) string — column header display name",
+      "format": "(optional) number_comma | percentage | currency | decimal"
+    }
+  ],
+  "sort_by": "(optional) string — field name to sort by",
+  "sort_order": "(optional) asc | desc — default: desc",
+  "variant": "(optional) standard | highlight — default: standard",
+  "grid": {
+    "col": "(required) int 1-12",
+    "row": "(required) int",
+    "width": "(required) int — typically 8-12",
+    "height": "(required) int — typically 2-3"
+  }
+}
+```
+
+## Sizing Guidelines
+- **Width**: 8-12 columns (use 8 for side-by-side with a chart, 12 for standalone)
+- **Height**: 2-3 rows (use 3 for tables with many rows)
+- **Common pattern**: Full-width table (12 cols) at dashboard bottom, or paired with pie chart (8+4)
+- **Best practice**: Keep columns to 3-6 for readability; use `sort_by` to highlight top/bottom items
