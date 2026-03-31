@@ -1,360 +1,436 @@
-# ASCII Patterns Reference
+# ASCII Wireframe Patterns Reference
 
-## Box-Drawing Character Set
+A reference guide for building ASCII wireframes using box-drawing characters, block elements, and layout conventions.
 
-### Dashboard Frame
-```
-╔  ═  ╗    top border
-║       ║    sides
-╠  ═  ╣    section divider
-╚  ═  ╝    bottom border
-```
+---
 
-### Widget Border (rounded)
+## Box-Drawing Characters
+
+### Single-Line Borders
 ```
-╭  ─  ╮    top
-│       │    sides
-╰  ─  ╯    bottom
+┌─────────────────┐
+│                 │
+│   content area  │
+│                 │
+└─────────────────┘
 ```
 
-### Inner Table Grid
+| Character | Unicode | Use |
+|-----------|---------|-----|
+| `┌` | U+250C | Top-left corner |
+| `┐` | U+2510 | Top-right corner |
+| `└` | U+2514 | Bottom-left corner |
+| `┘` | U+2518 | Bottom-right corner |
+| `─` | U+2500 | Horizontal line |
+| `│` | U+2502 | Vertical line |
+| `├` | U+251C | Left T-junction |
+| `┤` | U+2524 | Right T-junction |
+| `┬` | U+252C | Top T-junction |
+| `┴` | U+2534 | Bottom T-junction |
+| `┼` | U+253C | Cross junction |
+
+### Double-Line Borders
 ```
-┌  ─  ┬  ─  ┐    top
-│       │       │    row
-├  ─  ┼  ─  ┤    divider
-└  ─  ┴  ─  ┘    bottom
+╔═════════════════╗
+║                 ║
+║   content area  ║
+║                 ║
+╚═════════════════╝
 ```
 
-### Axis Characters
+| Character | Unicode | Use |
+|-----------|---------|-----|
+| `╔` | U+2554 | Top-left corner |
+| `╗` | U+2557 | Top-right corner |
+| `╚` | U+255A | Bottom-left corner |
+| `╝` | U+255D | Bottom-right corner |
+| `═` | U+2550 | Horizontal double |
+| `║` | U+2551 | Vertical double |
+| `╠` | U+2560 | Left T-junction |
+| `╣` | U+2563 | Right T-junction |
+| `╦` | U+2566 | Top T-junction |
+| `╩` | U+2569 | Bottom T-junction |
+| `╬` | U+256C | Cross junction |
+
+### Mixed Single/Double
 ```
-┤    y-axis tick mark
-┼    axis origin (intersection)
-┬    x-axis tick mark (pointing up into chart)
+╒═══════╤═══════╕
+│       │       │
+╞═══════╪═══════╡
+│       │       │
+╘═══════╧═══════╛
 ```
 
 ---
 
-## Full Dashboard Frame Template
+## Block Fill Characters
 
-```
-╔══════════════════════════════════════════════════════════════╗
-║  Dashboard Title                         [Filter A ▾]        ║
-╠══════════════════════════════════════════════════════════════╣
-║                                                              ║
-║  (widget rows go here)                                       ║
-║                                                              ║
-╚══════════════════════════════════════════════════════════════╝
-```
+Used for bar charts, progress indicators, and density fills.
 
-- Filters appear in the header row, right-aligned, separated by spaces.
-- Use `[Label ▾]` for dropdown filters.
-- Section dividers (`╠═╣`) may be added between major logical groups if helpful.
+| Character | Unicode | Fill Level | Use |
+|-----------|---------|-----------|-----|
+| `█` | U+2588 | 100% | Full block — max value bars |
+| `▓` | U+2593 | 75% | Dark shade |
+| `▒` | U+2592 | 50% | Medium shade |
+| `░` | U+2591 | 25% | Light shade |
+| `▄` | U+2584 | Bottom half | Lower half block |
+| `▀` | U+2580 | Top half | Upper half block |
+| `▌` | U+258C | Left half | Left half block |
+| `▐` | U+2590 | Right half | Right half block |
 
----
-
-## Widget Border Template
-
-```
-╭──────────────────────────────────────╮
-│ Widget Title                          │
-│                                       │
-│  (content)                            │
-│                                       │
-╰──────────────────────────────────────╯
-```
+### Fractional Blocks (for smooth bars)
+| Character | Unicode | Width |
+|-----------|---------|-------|
+| `▏` | U+258F | 1/8 |
+| `▎` | U+258E | 2/8 |
+| `▍` | U+258D | 3/8 |
+| `▌` | U+258C | 4/8 |
+| `▋` | U+258B | 5/8 |
+| `▊` | U+258A | 6/8 |
+| `▉` | U+2589 | 7/8 |
+| `█` | U+2588 | 8/8 |
 
 ---
 
-## Chart-Specific ASCII Patterns
+## Layout Sizing Conventions
 
-### Bar Chart — Vertical
+### 12-Column Grid
+
+All dashboards use a 12-column grid. Each column = 6 characters wide (plus 1 for gutter) in wireframes.
+
 ```
-│  120 ┤
-│  100 ┤  ██
-│   80 ┤  ██  ██
-│   60 ┤  ██  ██  ██
-│   40 ┤  ██  ██  ██  ██
-│   20 ┤  ██  ██  ██  ██  ██
-│    0 ┼──┴───┴───┴───┴───┴──
-│       NA   EU  APAC  LA  MEA
+col: 1   2   3   4   5   6   7   8   9   10  11  12
+     |    |    |    |    |    |    |    |    |    |    |    |
+     ┌────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┐
 ```
 
-### Bar Chart — Horizontal
+| col_span | Approx chars wide | Label |
+|----------|-------------------|-------|
+| 2        | ~12               | Narrow |
+| 3        | ~18               | Quarter |
+| 4        | ~24               | Third |
+| 6        | ~36               | Half |
+| 8        | ~48               | Two-thirds |
+| 9        | ~54               | Three-quarters |
+| 12       | ~72               | Full |
+
+### Row Heights
+
+| row_height | Approx lines tall | Use |
+|------------|-------------------|-----|
+| 1          | 3–4 lines         | KPI card, text header |
+| 2          | 6–8 lines         | Sparkline, filter bar |
+| 3          | 10–12 lines       | Small chart |
+| 4          | 14–16 lines       | Standard chart |
+| 5          | 18–20 lines       | Large chart, table |
+| 6          | 22–24 lines       | Full-height chart |
+
+---
+
+## Chart Pattern Library
+
+### KPI Card
 ```
-│  Product A  ████████████████  $142K
-│  Product B  ████████████      $108K
-│  Product C  █████████         $87K
-│  Product D  ██████            $62K
+┌──────────────────────────┐
+│  Metric Title            │
+│                          │
+│        42,891            │
+│    ▲ +12.3% vs prev      │
+└──────────────────────────┘
 ```
 
-### Bar Chart — Stacked (two series: `██` and `▓▓`)
+### Horizontal Bar Chart
 ```
-│  100 ┤  ▓▓
-│   80 ┤  ██  ▓▓
-│   60 ┤  ██  ██  ▓▓
-│   40 ┤  ██  ██  ██
-│    0 ┼──┴───┴───┴──
-│       Q1   Q2   Q3
-│       ██ Series A  ▓▓ Series B
-```
-
-### Line Chart — Single
-```
-│  100 ┤              ╱──╲
-│   80 ┤         ╱──╱     ╲──╱╲
-│   60 ┤    ╱──╱                ╲
-│   40 ┤  ╱                      ╲
-│   20 ┤╱
-│    0 ┼──┬──┬──┬──┬──┬──┬──┬──┬──
-│       J  F  M  A  M  J  J  A  S
+┌─────────────────────────────────┐
+│ Category A  ████████████░░  78% │
+│ Category B  █████████░░░░░  61% │
+│ Category C  ███████░░░░░░░  48% │
+│ Category D  █████░░░░░░░░░  34% │
+│ Category E  ███░░░░░░░░░░░  22% │
+└─────────────────────────────────┘
 ```
 
-### Line Chart — Multi-Series (`──` solid, `╌╌` dashed)
+### Vertical Bar Chart
 ```
-│   ── Series A
-│   ╌╌ Series B
-│
-│  80 ┤         ╱──╱
-│  60 ┤    ╱──╱      ╌╌╌╌╌╌╌╌
-│  40 ┤  ╱      ╌╌╌╌╌
-│  20 ┤╱   ╌╌╌╌
-│   0 ┼──┬──┬──┬──┬──┬──
+┌──────────────────────────────┐
+│  100│        ██             │
+│   80│     ██ ██ ██          │
+│   60│  ██ ██ ██ ██          │
+│   40│  ██ ██ ██ ██ ██       │
+│   20│  ██ ██ ██ ██ ██ ██    │
+│    0└──────────────────────  │
+│      Jan Feb Mar Apr May Jun │
+└──────────────────────────────┘
+```
+
+### Line Chart
+```
+┌──────────────────────────────┐
+│  100│              ╭──╮      │
+│   80│         ╭───╯  ╰─╮    │
+│   60│    ╭───╯          ╰╮  │
+│   40│╭──╯                ╰  │
+│   20│                       │
+│    0└──────────────────────  │
+│      Jan Feb Mar Apr May Jun │
+└──────────────────────────────┘
 ```
 
 ### Area Chart
 ```
-│  100 ┤              ╱──╲
-│   80 ┤         ╱──╱▓▓▓▓▓╲──╱╲
-│   60 ┤    ╱──╱▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓╲
-│   40 ┤  ╱▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓╲
-│   20 ┤╱▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-│    0 ┼──┬──┬──┬──┬──┬──┬──┬──┬──
+┌──────────────────────────────┐
+│  100│              ╭──╮      │
+│   80│         ╭───╯▓▓▓╰─╮   │
+│   60│    ╭───╯▓▓▓▓▓▓▓▓▓▓╰╮  │
+│   40│╭──╯▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓╰  │
+│   20│▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  │
+│    0└──────────────────────  │
+│      Jan Feb Mar Apr May Jun │
+└──────────────────────────────┘
 ```
 
 ### Pie / Donut Chart
 ```
-╭──────────────────────────────────────╮
-│ Revenue by Channel                    │
-│                                       │
-│        ╭──────╮                       │
-│      ╱           ╲   ██ Online  42%   │
-│     │   ██  ▓▓   │   ▓▓ Retail  33%   │
-│     │   ▒▒  ░░   │   ▒▒ Partner 15%   │
-│      ╲           ╱   ░░ Other   10%   │
-│        ╰──────╯                       │
-╰──────────────────────────────────────╯
-```
-Donut: add concentric inner ring `○` or leave center blank with label.
-
-### KPI Card
-```
-╭───────────╮
-│ Revenue    │
-│ $1.2M      │
-│ ▲ 12.5%    │
-╰───────────╯
-```
-Delta indicators: `▲` positive, `▼` negative, `─` neutral.
-
-### Table (text)
-```
-│  Account     │ Revenue  │ Growth  │
-│  ────────────┼──────────┼─────────│
-│  Acme Corp   │  $820K   │ ▲ 12%   │
-│  GlobalTech  │  $645K   │ ▲  8%   │
-│  Pinnacle    │  $410K   │ ▼  3%   │
+       ┌──────────────────┐
+       │     ╭───╮        │
+       │   ╱  A  ╲        │
+       │  │  45%  │  ─ A  │
+       │   ╲ ─── ╱   ─ B  │
+       │  ╱╲     ╱╲  ─ C  │
+       │ ╱ B╲   ╱ C╲      │
+       │╱ 30%╲ ╱ 25%╲     │
+       └──────────────────┘
 ```
 
-### Table (highlight / heatmap cells)
+### Scatter Plot
 ```
-│  Account     │ Revenue  │ Margin  │
-│  ────────────┼──────────┼─────────│
-│  Acme Corp   │ ██ $820K │ ██  42% │
-│  GlobalTech  │ ██ $645K │ █   38% │
-│  Pinnacle    │ █  $410K │ ░   28% │
+┌──────────────────────────────┐
+│  100│  ·        ·   ·        │
+│   80│     ·  ·     ·         │
+│   60│  ·     ·  ·    ·       │
+│   40│     ·     ·  ·         │
+│   20│  ·  ·        ·         │
+│    0└──────────────────────  │
+│      0   20  40  60  80  100 │
+└──────────────────────────────┘
 ```
-Intensity scale: `██` high · `█` medium · `░` low.
+
+### Table
+```
+┌──────────────┬───────┬───────┬───────┐
+│ Name         │ Q1    │ Q2    │ Q3    │
+├──────────────┼───────┼───────┼───────┤
+│ Alpha        │ 1,200 │ 1,450 │ 1,380 │
+│ Beta         │   890 │   920 │ 1,100 │
+│ Gamma        │ 2,100 │ 1,980 │ 2,240 │
+│ Delta        │   445 │   510 │   490 │
+├──────────────┼───────┼───────┼───────┤
+│ Total        │ 4,635 │ 4,860 │ 5,210 │
+└──────────────┴───────┴───────┴───────┘
+```
+
+### Heatmap
+```
+┌────────────────────────────────────┐
+│       Mon  Tue  Wed  Thu  Fri      │
+│  9am  ░░░  ▒▒▒  ███  ▒▒▒  ░░░     │
+│ 10am  ▒▒▒  ███  ███  ███  ▒▒▒     │
+│ 11am  ███  ███  ▓▓▓  ███  ███     │
+│  1pm  ▒▒▒  ▓▓▓  ███  ▓▓▓  ▒▒▒     │
+│  2pm  ░░░  ▒▒▒  ▓▓▓  ▒▒▒  ░░░     │
+│  3pm  ░░░  ░░░  ▒▒▒  ░░░  ░░░     │
+└────────────────────────────────────┘
+```
+
+### Gauge / Radial
+```
+       ┌──────────────────┐
+       │    ╭─────────╮   │
+       │  ╱   ░░▓▓███   ╲ │
+       │ │  ░░░░▓▓▓███  │ │
+       │  ╲       ↑     ╱ │
+       │    ╰─────┼───╯   │
+       │          68%      │
+       └──────────────────┘
+```
 
 ### Funnel
 ```
-│  ████████████████████  Visitors   10,000
-│    ████████████████    Leads       6,200
-│      ████████████      MQLs        3,100
-│        ████████        SQLs        1,450
-│          ████          Closed        380
+┌──────────────────────────────┐
+│  ████████████████████  100%  │
+│    ██████████████████   72%  │
+│      ████████████████   54%  │
+│        ██████████████   38%  │
+│          ████████████   21%  │
+│            ██████████   12%  │
+└──────────────────────────────┘
 ```
 
-### Waterfall
+### Waterfall Chart
 ```
-│  500 ┤  ██
-│  400 ┤  ██  ░░
-│  300 ┤  ██  ░░  ██
-│  200 ┤  ██  ░░  ██  ░░
-│  100 ┤  ██  ░░  ██  ░░  ██
-│    0 ┼──┴───┴───┴───┴───┴──
-│       Base  +A  -B   +C  Net
+┌──────────────────────────────┐
+│  120│     ██               │ │
+│  100│  ██ ██ ▓▓            │ │
+│   80│  ██ ██ ▓▓ ██         │ │
+│   60│  ██    ▓▓ ██ ░░      │ │
+│   40│        ▓▓    ░░ ██   │ │
+│   20│              ░░ ██   │ │
+│    0└─────────────────────  │ │
+│     Start +A  -B  +C  -D End│ │
+└──────────────────────────────┘
+  ██ Increase  ▓▓ Base  ░░ Decrease
 ```
-`██` increase · `░░` decrease.
 
 ### Treemap
 ```
-┌──────────────┬────────┐
-│              │ Mid-   │
-│  Enterprise  │ Market │
-│   $2.1M      │ $1.1M  │
-│   50.0%      │ 26.2%  │
-├──────────────┼───┬────┤
-│   SMB        │Gov│    │
-│   $0.7M      │$0.│    │
-└──────────────┴───┴────┘
-```
-
-### Heatmap (matrix)
-```
-│         │ Jan  │ Feb  │ Mar  │ Apr  │
-│  ────────┼──────┼──────┼──────┼──────│
-│  North   │  ██  │  ██  │  ▓▓  │  ░░  │
-│  South   │  ▓▓  │  ██  │  ██  │  ██  │
-│  East    │  ░░  │  ▓▓  │  ██  │  ▓▓  │
-│  West    │  ██  │  ░░  │  ▓▓  │  ██  │
-```
-`██` high · `▓▓` medium-high · `▒▒` medium · `░░` low.
-
-### Scatter / Bubble
-```
-│  100 ┤               ●
-│   80 ┤          ○         ●
-│   60 ┤     ◯                   ●
-│   40 ┤  ○         ◯
-│   20 ┤       ●
-│    0 ┼──┬──┬──┬──┬──┬──┬──┬──
-│         0   20  40  60  80  100
-```
-Bubble size: `●` large · `○` medium · `·` small.
-
-### Gauge / Speedometer
-```
-╭──────────────────────────╮
-│ Customer Satisfaction     │
-│                           │
-│     ╭──────────╮          │
-│    ╱  ████░░░░  ╲         │
-│   │   ████░░░░   │  72%   │
-│   │      ↑       │        │
-│    ╲─────────────╱        │
-│      Low   Mid  High      │
-╰──────────────────────────╯
-```
-
-### Sparkline (inline mini chart)
-```
-│ Revenue   ╱╲╱──╱   $1.2M  ▲ 8%  │
-│ Users     ╱───╱╲   45.2K  ▲ 3%  │
-│ Churn      ╲╱╲╱    2.1%   ▼ 0.2% │
+┌──────────────────────────────────┐
+│ ┌─────────────┬────────┬───────┐ │
+│ │             │        │  E    │ │
+│ │      A      │   C    │ 8%    │ │
+│ │    35%      │  18%   ├───────┤ │
+│ │             │        │  F    │ │
+│ ├─────────────┤        │ 6%    │ │
+│ │      B      ├────────┴───────┤ │
+│ │    22%      │       D  11%   │ │
+│ └─────────────┴────────────────┘ │
+└──────────────────────────────────┘
 ```
 
 ### Bullet Chart
 ```
-│  Revenue  ░░░░░░████████│   $1.2M / $1.5M target  │
-│  Margin   ░░░████████   │   38% / 40% target       │
-│  NPS      ░░░░░░░█████  │   52 / 60 target         │
-```
-Background `░░░░░░` = range, fill `████` = actual, `│` = target marker.
-
-### Gantt
-```
-│  Task              │ Jan  │ Feb  │ Mar  │ Apr  │ May  │
-│  ──────────────────┼──────┼──────┼──────┼──────┼──────│
-│  Discovery         │ ████ │      │      │      │      │
-│  Design            │ ████ │ ████ │      │      │      │
-│  Development       │      │ ████ │ ████ │ ████ │      │
-│  QA                │      │      │      │ ████ │ ████ │
+┌──────────────────────────────────┐
+│ Revenue                          │
+│ ░░░░░░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓██████│   │
+│          ↑target      ↑actual    │
+│                                  │
+│ Margin                           │
+│ ░░░░░░░░░░░░░▓▓▓▓▓▓▓▓▓█████│    │
+│              ↑target  ↑actual    │
+└──────────────────────────────────┘
 ```
 
-### Calendar Heatmap
+### Gantt Chart
 ```
-│     Mon  Tue  Wed  Thu  Fri
-│  W1  ░░   ██   ▓▓   ██   ░░
-│  W2  ██   ▓▓   ██   ░░   ▓▓
-│  W3  ▓▓   ██   ░░   ██   ██
-│  W4  ██   ░░   ██   ▓▓   ██
+┌──────────────────────────────────────┐
+│ Task         │Jan│Feb│Mar│Apr│May│Jun│
+├──────────────┼───┼───┼───┼───┼───┼──┤
+│ Planning     │███│   │   │   │   │  │
+│ Design       │▒▒▒│███│   │   │   │  │
+│ Development  │   │▒▒▒│███│███│   │  │
+│ Testing      │   │   │   │▒▒▒│███│  │
+│ Launch       │   │   │   │   │▒▒▒│██│
+└──────────────────────────────────────┘
+```
+
+### Sparkline
+```
+┌──────────────────────────┐
+│ Revenue  ╭─╮   ╭──╮  ▲  │
+│          │ ╰─╮╯  ╰╮╯ 12%│
+└──────────────────────────┘
 ```
 
 ### Filter Bar
 ```
-╭──────────────────────────────────────────────────────────╮
-│  [Region ▾ All]  [Product ▾ All]  [Date Range ▾ YTD]     │
-╰──────────────────────────────────────────────────────────╯
+┌─────────────────────────────────────────────┐
+│ [Date Range ▼] [Region ▼] [Category ▼] [🔍] │
+└─────────────────────────────────────────────┘
 ```
 
-### Text Header
+### Text / Header
 ```
-╭──────────────────────────────────────╮
-│  ▌ Section Title                      │
-│  Subtitle or description line here    │
-╰──────────────────────────────────────╯
+┌──────────────────────────────────────────┐
+│  Dashboard Title                         │
+│  Subtitle or description text here       │
+│                              Updated: now│
+└──────────────────────────────────────────┘
+```
+
+---
+
+## Multi-Row Layout Patterns
+
+### 4 KPI Cards + Chart Below
+```
+┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
+│ KPI 1    │ │ KPI 2    │ │ KPI 3    │ │ KPI 4    │
+│  1,234   │ │  56.7%   │ │  $89K    │ │  ▲ 4.2%  │
+└──────────┘ └──────────┘ └──────────┘ └──────────┘
+┌──────────────────────────┐ ┌────────────────────┐
+│                          │ │                    │
+│       Line Chart         │ │     Bar Chart      │
+│                          │ │                    │
+└──────────────────────────┘ └────────────────────┘
+```
+
+### Two-Column with Sidebar
+```
+┌──────────────────────────────┐ ┌──────────────┐
+│                              │ │  Filter Bar  │
+│       Main Chart             │ ├──────────────┤
+│                              │ │   KPI Card   │
+│                              │ ├──────────────┤
+│                              │ │   KPI Card   │
+└──────────────────────────────┘ └──────────────┘
+```
+
+### Full-Width Header + Grid
+```
+┌──────────────────────────────────────────────────┐
+│  Executive Summary Dashboard          2024 Q4    │
+└──────────────────────────────────────────────────┘
+┌────────────┐ ┌────────────┐ ┌────────────┐
+│   KPI 1    │ │   KPI 2    │ │   KPI 3    │
+└────────────┘ └────────────┘ └────────────┘
+┌──────────────────────────────────────────────────┐
+│                    Main Chart                    │
+└──────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Sizing Quick Reference
+## Axis and Annotation Conventions
 
-| Component       | Typical Width | Typical Height |
-|-----------------|---------------|----------------|
-| KPI Card        | 2–3 cols      | 1 row          |
-| Bar Chart       | 4–6 cols      | 2 rows         |
-| Line Chart      | 5–8 cols      | 2 rows         |
-| Area Chart      | 6–8 cols      | 2 rows         |
-| Pie / Donut     | 4–6 cols      | 2 rows         |
-| Table           | 8–12 cols     | 2–3 rows       |
-| Treemap         | 4–6 cols      | 2 rows         |
-| Heatmap         | 6–8 cols      | 2 rows         |
-| Funnel          | 4–6 cols      | 2–3 rows       |
-| Waterfall       | 6–8 cols      | 2 rows         |
-| Scatter         | 4–6 cols      | 2 rows         |
-| Gauge           | 3–4 cols      | 2 rows         |
-| Sparkline       | 4–6 cols      | 1 row          |
-| Bullet Chart    | 6–8 cols      | 1–2 rows       |
-| Gantt           | 8–12 cols     | 2–3 rows       |
-| Filter Bar      | 12 cols       | 1 row          |
-| Text Header     | 4–12 cols     | 1 row          |
+### Y-Axis Labels
+```
+│ 100 ┤
+│  80 ┤
+│  60 ┤
+│  40 ┤
+│  20 ┤
+│   0 ┼───────────────────
+```
+
+### X-Axis Labels
+```
+      ───────────────────
+      Jan  Feb  Mar  Apr
+```
+
+### Trend Indicators
+| Symbol | Meaning |
+|--------|---------|
+| `▲` | Up / Positive trend |
+| `▼` | Down / Negative trend |
+| `→` | Flat / No change |
+| `↑` | Strong increase |
+| `↓` | Strong decrease |
+| `●` | Data point |
+| `✕` | Filtered out / N/A |
+
+### Legend Patterns
+```
+■ Series A   □ Series B   ▩ Series C   ░ Series D
+```
 
 ---
 
-## Common Layout Patterns
+## Responsive Breakpoints
 
-### KPI Row (4 cards)
-```
-col:  1───3  4───6  7───9  10──12
-       KPI    KPI    KPI    KPI
-```
+When `col_span` would cause overlap in narrow viewports, components stack vertically:
 
-### KPI Row (6 cards)
-```
-col:  1─2  3─4  5─6  7─8  9─10  11─12
-       KPI  KPI  KPI  KPI  KPI   KPI
-```
-
-### Two Charts Side-by-Side
-```
-col:  1────────6  7────────12
-       Chart A     Chart B
-```
-
-### Featured Chart + Sidebar
-```
-col:  1──────────8  9────12
-       Main Chart   Side
-```
-
-### Full-Width Chart
-```
-col:  1─────────────────────12
-             Chart
-```
-
-### Mixed Row: Gauge + Sparklines
-```
-col:  1──3  4──────────────12
-       Gauge   Sparkline stack
-```
+| Breakpoint | Behavior |
+|------------|----------|
+| Full (12 cols) | Side-by-side as specified |
+| Medium (8 cols) | 3-col components become 4-col |
+| Narrow (4 cols) | All components go full-width |
