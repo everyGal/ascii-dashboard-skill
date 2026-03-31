@@ -1,0 +1,67 @@
+# Component: Waterfall
+
+## ASCII Patterns
+
+### Basic Waterfall
+```
+╭──────────────────────────────────────────╮
+│  Revenue Bridge Q3 → Q4                  │
+│                                          │
+│  $1.4M ·                          ┌───┐  │
+│        ·              ┌───┐       │   │  │
+│  $1.2M ·  ┌───┐      │   │ ┌───┐ │   │  │
+│        ·  │   │ ┌───┐ │   │ │   │ │   │  │
+│  $1.0M · ─┤   ├─┤   ├─┤   ├─┤   ├─┤   │  │
+│        ·  │ + │ │ + │ │ − │ │ + │ │ = │  │
+│  $0.8M · ─┤   ├─┤   ├─┤   ├─┤   ├─┤   │  │
+│        ·  │   │ │   │ │   │ │   │ │   │  │
+│  $0.6M · ─┴───┴─┴───┴─┴───┴─┴───┴─┴───┘  │
+│        ·  Q3    New   Lost  Upsell  Q4   │
+│        · Start  Cust  Cust         Total │
+│                                          │
+│  ██ Increase  ░░ Decrease  ▓▓ Total      │
+╰──────────────────────────────────────────╯
+```
+
+### Profit Breakdown Waterfall
+```
+╭──────────────────────────────────────────╮
+│  Profit Breakdown                        │
+│                                          │
+│  $500K ·  ┌───┐                          │
+│        ·  │   │                          │
+│  $400K ·  │   ├───────┐                  │
+│        ·  │   │ -$80K │                  │
+│  $300K ·  │   ├───────┴──┐     ┌───┐     │
+│        ·  │Rev│  COGS    │     │   │     │
+│  $200K ·  │   │          ├──┐  │ = │     │
+│        ·  │$480│         │-50│ │Net│     │
+│  $100K ·  │   │          │OpX│ │$350│    │
+│        ·  └───┘          └──┘  └───┘     │
+│                                          │
+╰──────────────────────────────────────────╯
+```
+
+## Spec Template
+```json
+{
+  "id": "(required) string",
+  "type": "waterfall",
+  "title": "(required) string",
+  "category_field": "(required) string — dimension for each bar segment",
+  "value_field": "(required) string — metric (positive = increase, negative = decrease)",
+  "total_label": "(optional) string — label for the final total bar, default: 'Total'",
+  "show_connectors": "(optional) bool — lines connecting bars, default: true",
+  "grid": {
+    "col": "(required) int",
+    "row": "(required) int",
+    "width": "(required) int — typically 6-8",
+    "height": "(required) int — typically 2"
+  }
+}
+```
+
+## Sizing Guidelines
+- **Width**: 6-8 columns
+- **Height**: 2 rows
+- **Best for**: Revenue bridges, profit breakdowns, budget variance analysis
